@@ -21,6 +21,7 @@ ARG VERSION="1.16.1"
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
+    apt-get install -y --no-install-recommends apt-utils && \
     apt-get -y install gcc mono-mcs && \
     apt-get -y install libncurses5-dev libncursesw5-dev && \
     apt-get -y install zlib1g zlib1g-dev && \
