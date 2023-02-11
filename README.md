@@ -1,3 +1,4 @@
+[![Docker Image CI]https://github.com/mattgalbraith/samtools-docker-singularity/actions/workflows/docker-image.yml/badge.svg](https://github.com/mattgalbraith/samtools-docker-singularity/actions/workflows/docker-image.yml)
 # samtools-docker-singularity
 Build Docker container for Samtools software and (optionally) convert to Apptainer/Singularity.  
 Samtools is a suite of programs for interacting with high-throughput sequencing data.  
