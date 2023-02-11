@@ -1,9 +1,6 @@
 ################## BASE IMAGE ######################
 FROM ubuntu:18.04 as base
 
-################## BASE IMAGE ######################
-FROM ubuntu:18.04 as base
-
 ################## METADATA ######################
 LABEL base_image="ubuntu:18.04"
 LABEL version="1"
