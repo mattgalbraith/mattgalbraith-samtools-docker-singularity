@@ -20,15 +20,13 @@ ARG ENV_NAME="samtools"
 ARG VERSION="1.16.1"
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV PACKAGES ca-certificates gcc mono-mcs libncurses5-dev libncursesw5-dev zlib1g zlib1g-dev bzip2 libbz2-dev liblzma-dev \
+    libhtscodecs2 build-essential wget
+    # may need libcurl
+
 RUN apt-get update && \
-    apt-get -y install gcc mono-mcs && \
-    apt-get -y install libncurses5-dev libncursesw5-dev && \
-    apt-get -y install zlib1g zlib1g-dev && \
-    apt-get -y install bzip2 libbz2-dev && \
-    apt-get -y install liblzma-dev && \
-    apt-get -y install libhtscodecs2 && \
-    apt-get -y install build-essential && \
-    apt-get -y install wget && \
+    apt-get install -y --no-install-recommends ${PACKAGES} && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Get, configure, make, and install samtools 
@@ -40,17 +38,17 @@ RUN wget https://github.com/samtools/samtools/releases/download/${VERSION}/samto
     make && \
     make install
 
+# Second stage to make smaller container (in this case 560MB --> 176MB)
+# see https://docs.docker.com/build/building/multi-stage/
+# can also stop at specific stage for debugging eg docker build --target base -t samtools:v1.16.1
 FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND noninteractive
+ENV PACKAGES mono-mcs libncurses5-dev libncursesw5-dev zlib1g zlib1g-dev bzip2 libbz2-dev liblzma-dev \
+    libhtscodecs2
+    # may need libcurl
 RUN apt-get update && \
-    apt-get -y install gcc mono-mcs && \
-    apt-get -y install libncurses5-dev libncursesw5-dev && \
-    apt-get -y install zlib1g zlib1g-dev && \
-    apt-get -y install bzip2 libbz2-dev && \
-    apt-get -y install liblzma-dev && \
-    apt-get -y install libhtscodecs2 && \
-    apt-get -y install build-essential && \
-    apt-get -y install wget && \
+    apt-get install -y --no-install-recommends ${PACKAGES} && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-COPY --from=base /usr/local/bin/samtools/ /usr/local/
-
+COPY --from=base /usr/local/bin/samtools/ /usr/local/bin
 
