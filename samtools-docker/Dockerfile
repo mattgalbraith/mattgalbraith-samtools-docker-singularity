@@ -1,8 +1,8 @@
 ################## BASE IMAGE ######################
-FROM ubuntu:18.04 as base
+FROM ubuntu:22.04 as base
 
 ################## METADATA ######################
-LABEL base_image="ubuntu:18.04"
+LABEL base_image="ubuntu:22.04"
 LABEL version="1"
 LABEL software="Samtools"
 LABEL software.version="1.9.0"
@@ -21,7 +21,6 @@ ARG VERSION="1.16.1"
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends apt-utils && \
     apt-get -y install gcc mono-mcs && \
     apt-get -y install libncurses5-dev libncursesw5-dev && \
     apt-get -y install zlib1g zlib1g-dev && \
