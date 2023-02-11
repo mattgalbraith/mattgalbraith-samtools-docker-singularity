@@ -38,8 +38,19 @@ RUN wget https://github.com/samtools/samtools/releases/download/${VERSION}/samto
     cd samtools-${VERSION} && \
     ./configure && \
     make && \
-    make install && \
-    rm samtools-${VERSION}.tar && \
-    rm -r samtools-${VERSION}
+    make install
+
+FROM ubuntu:22.04
+RUN apt-get update && \
+    apt-get -y install gcc mono-mcs && \
+    apt-get -y install libncurses5-dev libncursesw5-dev && \
+    apt-get -y install zlib1g zlib1g-dev && \
+    apt-get -y install bzip2 libbz2-dev && \
+    apt-get -y install liblzma-dev && \
+    apt-get -y install libhtscodecs2 && \
+    apt-get -y install build-essential && \
+    apt-get -y install wget && \
+    rm -rf /var/lib/apt/lists/*
+COPY --from=base /usr/local/bin/samtools/ /usr/local/
 
 
