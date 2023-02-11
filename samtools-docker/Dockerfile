@@ -21,8 +21,8 @@ ARG VERSION="1.16.1"
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV PACKAGES ca-certificates gcc mono-mcs libncurses5-dev libncursesw5-dev zlib1g zlib1g-dev bzip2 libbz2-dev liblzma-dev \
-    libhtscodecs2 build-essential wget
-    # may need libcurl
+    libhtscodecs2 build-essential wget libcurl4 libcurl4-gnutls-dev
+    # need libcurl4 and libcurl4-gnutls-dev for GCS access - see https://github.com/samtools/samtools/issues/862
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ${PACKAGES} && \
@@ -44,11 +44,10 @@ RUN wget https://github.com/samtools/samtools/releases/download/${VERSION}/samto
 FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND noninteractive
 ENV PACKAGES mono-mcs libncurses5-dev libncursesw5-dev zlib1g zlib1g-dev bzip2 libbz2-dev liblzma-dev \
-    libhtscodecs2
-    # may need libcurl
+    libhtscodecs2 libcurl4 libcurl4-gnutls-dev ca-certificates
+    # need libcurl4, libcurl4-gnutls-dev and ca-certificates for GCS access - see https://github.com/samtools/samtools/issues/862
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ${PACKAGES} && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=base /usr/local/bin/samtools/ /usr/local/bin
-

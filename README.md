@@ -26,6 +26,8 @@ docker build -t samtools:v1.16.1 . # tag should match software version
 Mount and use your current directory and call the tool now encapsulated within the container
 ```bash
 docker run --rm -it -v "$PWD":"$PWD" -w "$PWD" samtools:v1.16.1 samtools -h
+
+docker run --rm -it samtools:v1.16.1 samtools view --no-header gs://gatk-test-data/wgs_bam/NA12878_20k_hg38/NA12878.bam | wc -l # should be 61614 lines
 ```
 
 ## Optional: Conversion of Docker image to Singularity
