@@ -5,7 +5,7 @@ Samtools is a suite of programs for interacting with high-throughput sequencing 
 
 ## Build docker container:  
 
-Installation with Conda did not work.
+Installation with Conda may not work.
 ### 1. For Samtools installation instructions:  
 http://www.htslib.org/download/  
 See also:
@@ -25,40 +25,31 @@ docker build -t samtools:v1.16.1 . # tag should match software version
 #### To test this tool from the command line:
 Mount and use your current directory and call the tool now encapsulated within the container
 ```bash
-docker run --rm -it -v "$PWD":"$PWD" -w "$PWD" samtools:v1.16.1 samtools -h
+docker run --rm -it samtools:v1.16.1 samtools --help
 
 docker run --rm -it samtools:v1.16.1 samtools view --no-header gs://gatk-test-data/wgs_bam/NA12878_20k_hg38/NA12878.bam | wc -l # should be 61614 lines
 ```
 
-## Optional: Conversion of Docker image to Singularity
+## Optional: Conversion of Docker image to Singularity  
 
-### 4. Build a Docker image to run Singularity
+### 3. Build a Docker image to run Singularity  
+(skip if this image is already on your system)  
+https://github.com/mattgalbraith/singularity-docker
 
-```bash
-cd $WORKING_DIR/singularity-docker
-docker build -t singularity .
-```
-
-#### Test singularity container
-```bash
-docker run --rm -it -v $PWD:$PWD -w $PWD singularity singularity
-```
-
-### 5. Save Docker image as tar and convert to sif (using singularity run from Docker container)
-```bash
-cd $WORKING_DIR
+### 4. Save Docker image as tar and convert to sif (using singularity run from Docker container)  
+``` bash
 docker images
-docker save <Image_ID> -o samtools-docker.tar # = IMAGE_ID of samtools image
-docker run -v "$PWD":"$PWD" --rm -it singularity bash -c "singularity build "$PWD"/samtools.sif docker-archive:///"$PWD"/samtools-docker.tar"
+docker save <Image_ID> -o samtools1.16.1-docker.tar && gzip samtools1.16.1-docker.tar # = IMAGE_ID of samtools image
+docker run -v "$PWD":/data --rm -it singularity:1.1.5 bash -c "singularity build /data/samtools1.16.1.sif docker-archive:///data/samtools1.16.1-docker.tar.gz"
 ```
-NB: may build with arm64 architecture if run on M1/M2 Macbook  
+NB: On Apple M1/M2 machines ensure Singularity image is built with x86_64 architecture or sif may get built with arm64  
 
-Next, transfer the samtools.sif file to the system on which you want to run Samtools from the Singularity container
+Next, transfer the sif file to the system on which you want to run Samtools from the Singularity container  
 
 ### 6. Test singularity container on (HPC) system with Singularity/Apptainer available
 ```bash
 # set up path to the Samtools Singularity container
-SAMTOOLS_SIF=path/to/samtools.sif
+SAMTOOLS_SIF=path/to/samtools1.16.1.sif
 
 # Test that Samtools can run from Singularity container
 singularity run $SAMTOOLS_SIF samtools --help # depending on system/version, singularity is now called apptainer
