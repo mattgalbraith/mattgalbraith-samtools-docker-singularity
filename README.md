@@ -46,7 +46,7 @@ NB: On Apple M1/M2 machines ensure Singularity image is built with x86_64 archit
 
 Next, transfer the sif file to the system on which you want to run Samtools from the Singularity container  
 
-### 6. Test singularity container on (HPC) system with Singularity/Apptainer available
+### 5. Test singularity container on (HPC) system with Singularity/Apptainer available
 ```bash
 # set up path to the Samtools Singularity container
 SAMTOOLS_SIF=path/to/samtools1.16.1.sif
