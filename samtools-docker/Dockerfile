@@ -1,5 +1,6 @@
 ################## BASE IMAGE ######################
-FROM ubuntu:22.04 as base
+FROM --platform=linux/amd64 ubuntu:22.04 as base
+# need to specify platform in case build is on arm64 system
 
 ################## METADATA ######################
 LABEL base_image="ubuntu:22.04"
@@ -15,7 +16,7 @@ LABEL about.license="MIT/Expat"
 ################## MAINTAINER ######################
 MAINTAINER Matthew Galbraith <matthew.galbraith@cuanschutz.edu>
 
-
+################## INSTALLATION ######################
 ARG ENV_NAME="samtools"
 ARG VERSION="1.16.1"
 
@@ -41,7 +42,7 @@ RUN wget https://github.com/samtools/samtools/releases/download/${VERSION}/samto
 # Second stage to make smaller container (in this case 560MB --> 176MB)
 # see https://docs.docker.com/build/building/multi-stage/
 # can also stop at specific stage for debugging eg docker build --target base -t samtools:v1.16.1
-FROM ubuntu:22.04
+FROM --platform=linux/amd64 ubuntu:22.04
 ENV DEBIAN_FRONTEND noninteractive
 ENV PACKAGES mono-mcs libncurses5-dev libncursesw5-dev zlib1g zlib1g-dev bzip2 libbz2-dev liblzma-dev \
     libhtscodecs2 libcurl4 libcurl4-gnutls-dev ca-certificates
